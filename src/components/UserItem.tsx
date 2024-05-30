@@ -5,8 +5,8 @@ export default function UserItem() {
       <p>GD</p>
     </div>
     <div className="grow">
-      <p className="text-[16px] font-bold">Guillaume Duhan</p>
-      <p className="text-[12px] text-neutral-500">codewithguillaume@gmail.com</p>
+      <p className="text-[16px] font-bold">Usuario X</p>
+      <p className="text-[12px] text-neutral-500">User@unicauca.edu.co</p>
     </div>
   </div>;
 }
