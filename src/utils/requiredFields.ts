@@ -1,7 +1,8 @@
 export interface EditableField {
     name: string;
-    subname: string,
-    type: 'text' | 'number' | 'email' | 'url' | "multiple";
+    subname: string;
+    size: 'single' | 'multiple';
+    type: 'text' | 'number' | 'email' | 'url';
     key: string;
 }
 
@@ -12,9 +13,9 @@ export const initialapprobalTx = {
 };
 
 export const approbalTxFields: EditableField[] = [
-    { name: 'Estado', subname: "", type: 'text', key: 'state' },
-    { name: 'Fase', subname: "", type: 'text', key: 'phase' },
-    { name: 'Link del documento', subname: "", type: 'url', key: 'associatedLink' }
+    { name: 'Estado', subname: "", size: 'single', type: 'text', key: 'state' },
+    { name: 'Fase', subname: "", size: 'single', type: 'text', key: 'phase' },
+    { name: 'Link del documento', subname: "", size: 'single', type: 'url', key: 'associatedLink' }
 ];
 
 export const initialProcess = {
@@ -24,31 +25,46 @@ export const initialProcess = {
 };
 
 export const processFields: EditableField[] = [
-    { name: 'Codigo', subname: "", type: 'text', key: 'code' },
-    { name: 'Nombre', subname: "", type: 'text', key: 'name' },
-    { name: 'Fases', subname: "Fase", type: 'multiple', key: 'phases' },
+    { name: 'Codigo', subname: "", size: 'single', type: 'text', key: 'code' },
+    { name: 'Nombre', subname: "", size: 'single', type: 'text', key: 'name' },
+    { name: 'Fases', subname: "Fase", size: 'multiple', type: 'text', key: 'phases' },
 ];
 
 export const initialAsignation = {
-    owners: ["0x00000000000000000"],
+    owners: ["deybyzm@unicauca.edu.co"],
     contractTo: "0x00000000000000",
-    state: "undeined"
+    state: "undefined"
 };
 
 export const asignationFields: EditableField[] = [
-    { name: 'Firmantes', subname: "Firmante", type: 'multiple', key: 'owners' },
-    { name: 'Cual contrato', subname: "", type: 'text', key: 'contractTo' },
-    { name: 'Estado', subname: "", type: 'text', key: 'state' },
+    { name: 'Firmantes', subname: "Firmante", size: 'multiple', type: 'email', key: 'owners' },
 ];
 
+export const assignationFieldsHard: EditableField[] = [
+    { name: 'Cual contrato', subname: "", size: 'single', type: 'text', key: 'contractTo' },
+    { name: 'Estado', subname: "", size: 'single', type: 'text', key: 'state' },
+]
+
 export const initialParticipants = {
-    students: ["0x00"],
+    students: ["deybyzm@unicauca.edu.co"],
     director: "",
     codirector: ""
 };
 
 export const participantsFields: EditableField[] = [
-    { name: 'Estudiantes', subname: "Estudiante", type: 'multiple', key: 'students' },
-    { name: 'Director', subname: "", type: 'text', key: 'director' },
-    { name: 'Codirector', subname: "", type: 'text', key: 'codirector' },
+    { name: 'Estudiantes', subname: "Estudiante", size: 'multiple', type: 'email', key: 'students' },
+    { name: 'Director', subname: "", size: 'single', type: 'text', key: 'director' },
+    { name: 'Codirector', subname: "", size: 'single', type: 'text', key: 'codirector' },
+];
+
+export const initialMyProcess = {
+    address: "0x00",
+    process: "0001",
+    state: "Initialized"
+};
+
+export const myProcessesFields: EditableField[] = [
+    { name: 'Dirección', subname: "", size: 'single', type: 'text', key: 'address' },
+    { name: 'Proceso', subname: "", size: 'single', type: 'text', key: 'process' },
+    { name: 'Estado', subname: "", size: 'single', type: 'text', key: 'state' },
 ];

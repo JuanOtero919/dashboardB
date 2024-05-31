@@ -252,8 +252,33 @@ export const mainContract = getContract({
       "inputs": [
         {
           "type": "string",
-          "name": "_processId",
+          "name": "_initialState",
           "internalType": "string"
+        },
+        {
+          "type": "string",
+          "name": "_contractProcessId",
+          "internalType": "string"
+        },
+        {
+          "type": "address",
+          "name": "_mainContract",
+          "internalType": "address"
+        },
+        {
+          "type": "address[]",
+          "name": "_students",
+          "internalType": "address[]"
+        },
+        {
+          "type": "address[]",
+          "name": "_director",
+          "internalType": "address[]"
+        },
+        {
+          "type": "address[]",
+          "name": "_codirector",
+          "internalType": "address[]"
         }
       ],
       "outputs": [
@@ -533,300 +558,315 @@ export const getDocumentContract = (address: string) => {
     address,
     abi: [
       {
-        "type": "constructor",
-        "name": "",
         "inputs": [
           {
-            "type": "string",
+            "internalType": "string",
             "name": "_initialState",
-            "internalType": "string"
+            "type": "string"
           },
           {
-            "type": "string",
+            "internalType": "string",
             "name": "_contractProcessId",
-            "internalType": "string"
-          }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-      },
-      {
-        "type": "event",
-        "name": "ParticipantAdded",
-        "inputs": [
-          {
-            "type": "address",
-            "name": "participant",
-            "indexed": false,
-            "internalType": "address"
+            "type": "string"
           },
           {
-            "type": "string",
-            "name": "name",
-            "indexed": false,
-            "internalType": "string"
-          }
-        ],
-        "outputs": [],
-        "anonymous": false
-      },
-      {
-        "type": "event",
-        "name": "StateChanged",
-        "inputs": [
-          {
-            "type": "address",
-            "name": "signer",
-            "indexed": false,
-            "internalType": "address"
-          },
-          {
-            "type": "string",
-            "name": "state",
-            "indexed": false,
-            "internalType": "string"
-          }
-        ],
-        "outputs": [],
-        "anonymous": false
-      },
-      {
-        "type": "event",
-        "name": "TransactionAdded",
-        "inputs": [
-          {
-            "type": "string",
-            "name": "phase",
-            "indexed": false,
-            "internalType": "string"
-          },
-          {
-            "type": "address",
-            "name": "signer",
-            "indexed": true,
-            "internalType": "address"
-          },
-          {
-            "type": "string",
-            "name": "state",
-            "indexed": false,
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "associatedLink",
-            "indexed": false,
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "date",
-            "indexed": false,
-            "internalType": "string"
-          }
-        ],
-        "outputs": [],
-        "anonymous": false
-      },
-      {
-        "type": "function",
-        "name": "addParticipant",
-        "inputs": [
-          {
-            "type": "address",
-            "name": "_participant",
-            "internalType": "address"
-          },
-          {
-            "type": "string",
-            "name": "_name",
-            "internalType": "string"
-          },
-          {
-            "type": "address",
+            "internalType": "address",
             "name": "_mainContract",
-            "internalType": "address"
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "_students",
+            "type": "address[]"
+          },
+          {
+            "internalType": "address[]",
+            "name": "_director",
+            "type": "address[]"
+          },
+          {
+            "internalType": "address[]",
+            "name": "_codirector",
+            "type": "address[]"
           }
         ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "constructor"
       },
       {
-        "type": "function",
-        "name": "addTransaction",
+        "anonymous": false,
         "inputs": [
           {
-            "type": "string",
-            "name": "_phase",
-            "internalType": "string"
+            "indexed": false,
+            "internalType": "address",
+            "name": "participant",
+            "type": "address"
           },
           {
-            "type": "string",
-            "name": "_state",
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "_associatedLink",
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "_date",
-            "internalType": "string"
+            "indexed": false,
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
           }
         ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
+        "name": "ParticipantAdded",
+        "type": "event"
       },
       {
-        "type": "function",
-        "name": "contractProcessId",
-        "inputs": [],
-        "outputs": [
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          }
-        ],
-        "stateMutability": "view"
-      },
-      {
-        "type": "function",
-        "name": "contractState",
-        "inputs": [],
-        "outputs": [
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          }
-        ],
-        "stateMutability": "view"
-      },
-      {
-        "type": "function",
-        "name": "getTransaction",
+        "anonymous": false,
         "inputs": [
           {
-            "type": "uint256",
-            "name": "index",
-            "internalType": "uint256"
-          }
-        ],
-        "outputs": [
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          },
-          {
-            "type": "address",
-            "name": "",
-            "internalType": "address"
-          },
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          }
-        ],
-        "stateMutability": "view"
-      },
-      {
-        "type": "function",
-        "name": "getTransactionCount",
-        "inputs": [],
-        "outputs": [
-          {
-            "type": "uint256",
-            "name": "",
-            "internalType": "uint256"
-          }
-        ],
-        "stateMutability": "view"
-      },
-      {
-        "type": "function",
-        "name": "participants",
-        "inputs": [
-          {
-            "type": "address",
-            "name": "",
-            "internalType": "address"
-          }
-        ],
-        "outputs": [
-          {
-            "type": "string",
-            "name": "",
-            "internalType": "string"
-          }
-        ],
-        "stateMutability": "view"
-      },
-      {
-        "type": "function",
-        "name": "setContractState",
-        "inputs": [
-          {
-            "type": "string",
-            "name": "_newState",
-            "internalType": "string"
-          }
-        ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
-      },
-      {
-        "type": "function",
-        "name": "transactions",
-        "inputs": [
-          {
-            "type": "uint256",
-            "name": "",
-            "internalType": "uint256"
-          }
-        ],
-        "outputs": [
-          {
-            "type": "string",
-            "name": "phase",
-            "internalType": "string"
-          },
-          {
-            "type": "address",
+            "indexed": false,
+            "internalType": "address",
             "name": "signer",
-            "internalType": "address"
+            "type": "address"
           },
           {
-            "type": "string",
+            "indexed": false,
+            "internalType": "string",
             "name": "state",
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "associatedLink",
-            "internalType": "string"
-          },
-          {
-            "type": "string",
-            "name": "date",
-            "internalType": "string"
+            "type": "string"
           }
         ],
-        "stateMutability": "view"
+        "name": "StateChanged",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "phase",
+            "type": "string"
+          },
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "signer",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "state",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "associatedLink",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "date",
+            "type": "string"
+          }
+        ],
+        "name": "TransactionAdded",
+        "type": "event"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_participant",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "_name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "_mainContract",
+            "type": "address"
+          }
+        ],
+        "name": "addParticipant",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "_phase",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_state",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_associatedLink",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_date",
+            "type": "string"
+          }
+        ],
+        "name": "addTransaction",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "contractProcessId",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "contractState",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          }
+        ],
+        "name": "getTransaction",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "getTransactionCount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "participants",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "_newState",
+            "type": "string"
+          }
+        ],
+        "name": "setContractState",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "transactions",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "phase",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "signer",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "state",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "associatedLink",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "date",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
       }
     ],
   });
