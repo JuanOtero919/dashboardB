@@ -1,25 +1,26 @@
 'use client';
 
 import { PreparedTransaction, prepareContractCall } from "thirdweb";
-import { useActiveWallet, useReadContract, useSendTransaction } from "thirdweb/react";
-import {
-    participantsFields, initialParticipants,
-    myProcessesFields, initialMyProcess
-} from "../../../utils/requiredFields";
-import { parseJsonString } from "../../../utils/json";
-import { EditForm } from "../../../components/editableForm";
+import { useActiveAccount, useReadContract, useSendTransaction } from "thirdweb/react";
 import { useEffect, useState } from "react";
-import { getDocumentContract, mainContract } from "../../../utils/contracts";
-import { Wallet } from "thirdweb/wallets";
-import { DataCard } from "../../../components/dataVisualization";
+import { Account } from "thirdweb/wallets";
+import { participantsFields, initialParticipants, myProcessesFields } from "@/utils/requiredFields";
+import { getDocumentContract, mainContract } from "@/utils/contracts";
+import { parseJsonString } from "@/utils/json";
 import { getProcessPhasesByAddress, getWalletAddress } from "../../contractInteract";
-//import { EventsHistory } from "../../eventsHistory";
 import DocumentTx from "../../documentTransaction";
+import { EditForm } from "@/components/editableForm";
+import { DataCard } from "@/components/dataVisualization";
 import { useGetDocDataMyProcesses } from "../../getDocumentData";
+import { EventsHistory } from "@/app/eventsHistory";
+import { useAuth } from "@/context/context";
 
 export default function Home() {
-    const activeWallet = useActiveWallet() as Wallet;
-    const wAddress = activeWallet.getAccount()?.address as string;
+
+    const { isAuthenticated } = useAuth();
+
+    const activeWallet = useActiveAccount() as Account;
+    const wAddress = activeWallet?.address as string;
 
     const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null);
 
@@ -30,9 +31,12 @@ export default function Home() {
     const [processIds, setProcessIds] = useState<string[]>([""]);
 
     const [selectedDocumentContract, setSelectedDocumentContract] = useState<string>("");
+    const [selectedDocumentContractEvents, setSelectedDocumentContractEvents] = useState<string>("");
 
     const [shouldUpdate, setShouldUpdate] = useState<boolean>(false);
     const { data: myProcesses, loading, error } = useGetDocDataMyProcesses(wAddress, shouldUpdate);
+
+    const [loadingPhases, setLoadingPhases] = useState<boolean>(true);
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedProcessId(event.target.value);
@@ -74,8 +78,6 @@ export default function Home() {
             console.error("Error:", error);
         }
     }, [processes]);
-
-
 
     //SEND TRANSACTIONS
     const { mutate: sendTransaction, data: transactionResult, isPending, isSuccess } = useSendTransaction();
@@ -125,15 +127,22 @@ export default function Home() {
     }
 
     const handleaddTx = async (process: string) => {
+        setLoadingPhases(true);
         setSelectedDocumentContract(process);
+        try {
+            const processPhases = await getProcessPhasesByAddress(process);
+            if (processPhases) setPhases(processPhases);
+            console.log("las process phases son:", processPhases);
+            phases.map((phase, index) => {
+                console.log("phase", index, ":", phase);
+            })
+        } catch (error) {
 
-        const processPhases = await getProcessPhasesByAddress(process);
-        setPhases(processPhases);
-        console.log("las process phases son:", processPhases);
-        phases.map((phase, index) => {
-            console.log("phase", index, ":", phase);
-        })
-        changeVisibilityEdit();
+        }
+        finally {
+            setLoadingPhases(false);
+            changeVisibilityEdit();
+        }
     };
 
     const createDocumentProcess = async (newJson: Record<string, any>) => {
@@ -154,97 +163,118 @@ export default function Home() {
         changeVisibilityAddProcess();
     };
 
-    return (
-        <>
-            <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <div className="p-8 bg-white rounded-lg shadow-lg w-full max-w-2xl">
-                    <h2 className="text-xl font-semibold mb-4 text-center">Mis Procesos Activos</h2>
-                    {!showAddProcess && !showEditionMode &&
-                        <>
-                            <div className="flex justify-center mb-4">
-                                <button
-                                    onClick={changeVisibilityAddProcess}
-                                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                                >
-                                    Añadir un Proceso nuevo
-                                </button>
-                            </div>
-                            {loading && <p>Cargando procesos...</p>}
-                            {error && <p>Error al obtener los procesos...</p>}
-                            {!loading && !error && myProcesses &&
-                                <>
-                                    {myProcesses.map((process, index) => (
-                                        <div key={index} className="p-4 bg-gray-100 rounded-lg mb-4">
-                                            <DataCard
-                                                json={process}
-                                                editableFields={myProcessesFields} />
-                                            <div className="flex justify-center mt-2">
-                                                <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-                                                    onClick={() => handleaddTx(process.address)}>
-                                                    Añadir documento
-                                                </button>
-                                            </div>
-                                        </ div>
-                                    ))
-                                    }
-                                </>
-                            }
-                        </>
-                    }
+    const handleShowEvents = async (process: string) => {
+        if (selectedDocumentContractEvents == process) {
+            setSelectedDocumentContractEvents("null");
+        }
+        else {
+            setSelectedDocumentContractEvents(process);
+        }
+    };
 
-                    <div className="p-4 bg-gray-100 rounded-lg mb-4">
-                        {showAddProcess && (
-                            <>
-                                <h2 className="text-xl font-semibold mb-4 text-center">Añadir nuevo proceso de Grado</h2>
-                                <div className="mb-4">
-                                    <select
-                                        value={selectedProcessId || ''}
-                                        onChange={handleOptionChange}
-                                        className="border border-gray-300 rounded-md p-2 w-full"
-                                    >
-                                        <option value="">Selecciona una opción</option>
-                                        {processIds.map((processId, index) => (
-                                            <option key={index} value={processId}>
-                                                {`${processId} - ${parseJsonString(processList[index]).name}`}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {selectedProcessId && (
-                                        <p className="mt-2">Has seleccionado: {selectedProcessId}</p>
-                                    )}
-                                </div>
-                                <EditForm
-                                    json={initialParticipants}
-                                    editableFields={participantsFields}
-                                    onSaveChanges={createDocumentProcess}
-                                />
-                                <div className="flex justify-center mt-4 space-x-2">
-                                    <button
-                                        onClick={changeVisibilityAddProcess}
-                                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-                                    >
-                                        Cerrar
-                                    </button>
-                                </div>
-                            </>
-                        )}
+
+    return isAuthenticated ? (
+        // <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="w-full">
+            <h2 className="text-xl font-semibold mb-4 text-center">Mis Procesos Activos</h2>
+            {!showAddProcess && !showEditionMode &&
+                <>
+                    <div className="flex justify-center mb-4">
+                        <button
+                            onClick={changeVisibilityAddProcess}
+                            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                        >
+                            Añadir un Proceso nuevo
+                        </button>
                     </div>
-                    <div className="p-4 bg-gray-100 rounded-lg mb-4">
-                        {showEditionMode &&
-                            <>
-                                <DocumentTx contractTo={selectedDocumentContract}
-                                    changeVisibilityEdit={changeVisibilityEdit}
-                                    user="student"
-                                    selectedPhase={selectedPhase}
-                                    setPhases={setSelectedPhase}
-                                    phases={phases}
-                                    setIsSuccess={setShouldUpdate}
-                                />
-                            </>}
-                        {/* <EventsHistory contractTo={selectedDocumentContract} /> */}
-                    </div>
-                </div>
+                    {loading && <p>Cargando procesos...</p>}
+                    {error && <p>Error al obtener los procesos...</p>}
+                    {!loading && !error && myProcesses &&
+                        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4
+                            w-full max-w-screen-lg grid-flow-row auto-rows-max">
+                            {myProcesses.map((process, index) => (
+                                <div key={index} className="p-4 bg-gray-100 rounded-lg mb-4">
+                                    <DataCard
+                                        json={process}
+                                        editableFields={myProcessesFields} />
+                                    <div className="flex justify-center mt-2">
+                                        <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+                                            onClick={() => handleaddTx(process.address)}>
+                                            Añadir documento
+                                        </button>
+                                    </div>
+                                    <EventsHistory contractTo={process.address} />
+
+                                    {/* {process.address != selectedDocumentContractEvents &&
+                                        <button onClick={() => handleShowEvents(process.address)}>
+                                            Mostrar historial</button>}
+                                    {process.address == selectedDocumentContractEvents &&
+                                        <div>
+                                            <button onClick={() => handleShowEvents(process.address)}>
+                                                Ocultar historial</button>
+                                            <EventsHistory contractTo={process.address} />
+                                        </div>
+                                    } */}
+                                </ div>
+                            ))
+                            }
+                        </ div>
+                    }
+                </>
+            }
+
+            <div className="p-4 bg-gray-100 rounded-lg mb-4">
+                {showAddProcess && (
+                    <>
+                        <h2 className="text-xl font-semibold mb-4 text-center">Añadir nuevo proceso de Grado</h2>
+                        <div className="mb-4">
+                            <select
+                                value={selectedProcessId || ''}
+                                onChange={handleOptionChange}
+                                className="border border-gray-300 rounded-md p-2 w-full"
+                            >
+                                <option value="">Selecciona una opción</option>
+                                {processIds.map((processId, index) => (
+                                    <option key={index} value={processId}>
+                                        {`${processId} - ${parseJsonString(processList[index]).name}`}
+                                    </option>
+                                ))}
+                            </select>
+                            {selectedProcessId && (
+                                <p className="mt-2">Has seleccionado: {selectedProcessId}</p>
+                            )}
+                        </div>
+                        <EditForm
+                            json={initialParticipants}
+                            editableFields={participantsFields}
+                            onSaveChanges={createDocumentProcess}
+                        />
+                        <div className="flex justify-center mt-4 space-x-2">
+                            <button
+                                onClick={changeVisibilityAddProcess}
+                                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                            >
+                                Cerrar
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
-        </>
+            <div className="p-4 bg-gray-100 rounded-lg mb-4">
+                {showEditionMode && !loadingPhases &&
+                    <DocumentTx contractTo={selectedDocumentContract}
+                        changeVisibilityEdit={changeVisibilityEdit}
+                        user="student"
+                        selectedPhase={selectedPhase}
+                        setPhases={setSelectedPhase}
+                        phases={phases}
+                        setIsSuccess={setShouldUpdate}
+                    />
+                }
+            </div>
+        </div>
+        // </div>
+    ) : (
+        <p>No esta logueado</p>
     );
 }

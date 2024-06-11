@@ -7,14 +7,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className=" flex items-start justify-between">
       <Sidebar />
       <main className="grid w-full h-full pl-[300px]">
-        <Header />
+        {/* <Header /> */}
         <div className="p-8">
           {children}
         </div>
       </main>
-    </>
+    </div>
   );
 }

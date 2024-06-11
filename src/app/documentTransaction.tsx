@@ -43,8 +43,6 @@ export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
         const multiSignAddress = await getPendingEvaluations(account, contractTo);
         console.log("LA MULTISIGN ADDRRES ES:", multiSignAddress);
 
-        //const multiSignAddress = "0xF22b8608686CD39B85A5086f6C36E7e330cEC95d"; //Hardcode de prueba
-
         if (multiSignAddress.length > 10) {
             console.log("La direccion se ha validado y se procede a firmar la aprobacion");
             const multiSignContract = getMultisignContract(multiSignAddress);

@@ -1,21 +1,21 @@
 export interface EditableField {
     name: string;
     subname: string;
-    size: 'single' | 'multiple';
+    size: 'single' | 'multiple' | 'reduced-link';
     type: 'text' | 'number' | 'email' | 'url';
     key: string;
 }
 
 export const initialapprobalTx = {
-    state: 'Aprobado',
     phase: 'Propuesta',
+    state: 'Aprobado',
     associatedLink: 'Se debe subir un documento a ipfs'
 };
 
 export const approbalTxFields: EditableField[] = [
-    { name: 'Estado', subname: "", size: 'single', type: 'text', key: 'state' },
     { name: 'Fase', subname: "", size: 'single', type: 'text', key: 'phase' },
-    { name: 'Link del documento', subname: "", size: 'single', type: 'url', key: 'associatedLink' }
+    { name: 'Estado', subname: "", size: 'single', type: 'text', key: 'state' },
+    { name: 'Link del documento', subname: "", size: 'reduced-link', type: 'url', key: 'associatedLink' }
 ];
 
 export const initialProcess = {

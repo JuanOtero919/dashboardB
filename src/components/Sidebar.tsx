@@ -24,12 +24,12 @@ export default function Sidebar() {
         {
           link: "/structure",
           icon: <Cpu />,
-          text: "Esquema",
+          text: "Esquemas",
         },
         {
           link: "/assignations",
           icon: <Inbox />,
-          text: "Asignacion",
+          text: "Asignaciones",
         },
       ],
     },
@@ -39,7 +39,7 @@ export default function Sidebar() {
         {
           link: "/evaluations",
           icon: <BookOpenCheck />,
-          text: "Evaluacion",
+          text: "Evaluaciones",
         },
       ],
     },
@@ -49,7 +49,7 @@ export default function Sidebar() {
         {
           link: "/process",
           icon: <FileText />,
-          text: "Proceso Activo",
+          text: "Procesos Activos",
         },
       ],
     },
@@ -66,25 +66,25 @@ export default function Sidebar() {
             {menuList.map((menu: any, key: number) => (
               <CommandGroup key={key} heading={menu.group}>
                 {menu.items.map((option: any, optionKey: number) => (
-                <Link href={option.link} key={optionKey} passHref>
-                  <CommandItem
-                    key={optionKey}
-                    className="flex gap-2 cursor-pointer"
-                  >
-                    {option.icon}
-                    {option.text}
-                  </CommandItem>
-                </Link>
+                  <Link href={option.link} key={optionKey} passHref>
+                    <CommandItem
+                      key={optionKey}
+                      className="flex gap-2 cursor-pointer"
+                    >
+                      {option.icon}
+                      {option.text}
+                    </CommandItem>
+                  </Link>
                 ))}
               </CommandGroup>
             ))}
           </CommandList>
         </Command>
       </div>
-      <Link href='/team' className="flex items-center gap-2">
+      {/* <Link href='/team' className="flex items-center gap-2">
         <Settings />
         <span> Team Setting</span>
-      </Link>
+      </Link> */}
     </div>
   );
 }
