@@ -9,7 +9,6 @@ interface Props {
 
 export const DataCard: React.FC<Props> = ({ json, editableFields }) => {
 
-
     const resolveAddress = (uri: string): string => {
         try {
             console.log("LA DIRECCION PARA BUSCAR ES", uri);

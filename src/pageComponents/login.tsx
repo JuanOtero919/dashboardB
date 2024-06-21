@@ -1,33 +1,32 @@
 'use client';
 
 import { useState } from "react";
-import { createSmartWallet, connectSmartWallet } from "../utils/wallet";
 import { useSetActiveWallet } from "thirdweb/react";
-import { Account } from "thirdweb/wallets";
-
 import { getUserEmail } from "thirdweb/wallets/in-app";
-import { client } from "../utils/constants";
-import { useAuth } from "../context/context";
+import { createSmartWallet, connectSmartWallet } from "@/utils/wallet";
+import { client } from "@/utils/constants";
+import { useAuth } from "@/context/context";
 
 export default function Login() {
-    const { login } = useAuth();
+    const { login, setInAppAccount } = useAuth();
     const [loadingStatus, setLoadingStatus] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
-    const setActiveAccount = useSetActiveWallet();
+    const setActiveWallet = useSetActiveWallet();
 
     const connectWallet = async () => {
         try {
             setIsLoading(true);
             setIsInvalid(false);
-            setLoadingStatus("Inicie sesion con su correo institucional")
-            const user_account = await createSmartWallet(setActiveAccount) as Account;
+            setLoadingStatus("Iniciando sesión...")
+            const [user_account, personalWallet] = await createSmartWallet(setActiveWallet);
             const email = await getUserEmail({ client });
             setLoadingStatus(`Iniciando sesión como ${email}`);
-            if (email?.endsWith("@unicauca.edu.co")) {
+            if (user_account && personalWallet && email?.endsWith("@unicauca.edu.co")) {
                 console.log("Correo valido:", email);
                 await connectSmartWallet(user_account, email, (status) => setLoadingStatus(status));
+                setInAppAccount(personalWallet);
                 setIsInvalid(false);
                 login();
             } else {
@@ -41,31 +40,44 @@ export default function Login() {
     };
 
     return (
-        <div className="flex items-center justify-center h-screen bg-indigo-900">
-            <div className="p-8 bg-gray-100 rounded-lg shadow-lg w-80 text-center">
-                <h2 className="text-xl font-bold mb-6 text-center">Login</h2>
-                {!isLoading && <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                    onClick={() => connectWallet()}
-                >Iniciar Sesión</button>}
-                {isLoading &&
-                    <p className="block text-gray-900">{loadingStatus}</p>
-                }
-                {isInvalid && <div>
-                    <p className="block text-gray-900">Correo no valido</p>
-                    <p className="block text-gray-900">El correo debe corresponder con una cuenta institucional</p>
-                    <p className="block text-gray-900">"correo@unicauca.edu.co"</p>
+        <div className="flex items-center justify-center min-h-screen bg-indigo-900">
+            <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-lg flex h-96  items-center">
+                <div className="w-1/2 h-full flex items-end bg-cover bg-center p-4" style={{ backgroundImage: 'url(/11121454_4650044.svg)' }}>
+                    <span className="text-xs text-gray-300">Imagen de storyset en Freepik</span>
                 </div>
-                }
-            </div>
-        </div>
-    )
-};
+                <div className="w-1/2 p-8 justify-center">
+                    <div className="flex items-center justify-center">
+                        <h2 className="text-4xl font-semibold mb-4">SG - Docs</h2>
+                    </div>
+                    <div className="flex items-center justify-center text-center">
+                        <p className="text-gray-700 mb-6">Ingresa a tu cuenta insitucional para acceder al sistema de gestión documental de procesos de Grado.</p>
+                    </div>
+                    {!isLoading &&
+                        <div className="flex items-center justify-center dark:bg-gray-800 mb-6">
+                            <button onClick={() => connectWallet()}
+                                className="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150">
+                                <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
+                                <span>Iniciar sesión con Google</span>
+                            </button>
+                        </div>
+                    }
+                    {isLoading &&
+                        <div className="flex items-center justify-center text-center">
+                            <p className="text-gray-700 mb-6">{loadingStatus}</p>
+                        </div>
 
-// isLoading ? (
-//     <div className="p-4 bg-gray-100 rounded-lg mb-4">
-//         <div className="flex justify-center mb-4">
-//             <p className="block text-gray-900">{loadingStatus}</p>
-//         </div>
-//     </div>
-// ) :
+                    }
+                    {isInvalid &&
+                        <div className="text-center">
+                            <p className="text-red-500 mb-2">Correo no valido</p>
+                            <p className="text-gray-700 mb-2">El correo debe corresponder con una cuenta institucional</p>
+                            <p className="text-gray-700 mb-2">"correo@unicauca.edu.co"</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div >
+    );
+}
+
+//Componente de inicio de sesión: https://tailwindflex.com/@shakti/google-login-signup-button

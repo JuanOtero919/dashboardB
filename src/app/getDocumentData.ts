@@ -21,7 +21,6 @@ export function useGetDocDataMyProcesses(wAddress: string, shouldUpdate: boolean
             try {
                 const processesArray = await getCurrentProcesses(wAddress);
                 console.log("procesos obtenidos:", processesArray);
-                console.log("entro al load")
                 if (processesArray) {
                     const myProcessesRecordArray = await Promise.all(
                         processesArray.map(async (process) => {

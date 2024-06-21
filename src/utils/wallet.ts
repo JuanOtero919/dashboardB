@@ -1,9 +1,30 @@
 import { ACCOUNT_FACTORY_ADDRESS, USERS_DIRECTORY_ADDRESS, CHAIN, client } from "./constants";
-import { Account, inAppWallet, smartWallet } from "thirdweb/wallets";
-import { getContract } from "thirdweb/contract";
-import { isContractDeployed } from "thirdweb/utils";
 import { prepareContractCall, resolveMethod, sendTransaction } from "thirdweb";
+import { Account, inAppWallet, smartWallet } from "thirdweb/wallets";
+import { isContractDeployed } from "thirdweb/utils";
+import { getContract } from "thirdweb/contract";
 import { cyph } from "./cypher";
+
+export const connectInAppWallet = async (personalAccount: Account, setWallet: Function) => {
+    try {
+        const wallet = smartWallet({
+            factoryAddress: ACCOUNT_FACTORY_ADDRESS,
+            chain: CHAIN,
+            gasless: true,
+        });
+
+        console.log("Smart Wallet", wallet);
+
+        const account = await wallet.connect({
+            client,
+            personalAccount,
+        });
+        setWallet(wallet);
+        return account;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 export const createSmartWallet = async (setWallet: Function) => {
     try {
@@ -14,31 +35,22 @@ export const createSmartWallet = async (setWallet: Function) => {
             strategy: "google",
         });
 
-        console.log("Personal Embedded Wallet", personalAccount);
+        console.log("Personal Embedded Wallet Account", personalAccount);
 
-        const wallet = smartWallet({
-            factoryAddress: ACCOUNT_FACTORY_ADDRESS,
-            chain: CHAIN,
-            gasless: true,
-        });
-
-        console.log("Smart Wallet", wallet)
-        const account = await wallet.connect({
-            client,
-            personalAccount: personalAccount,
-        });
-        setWallet(wallet);
-        return account;
+        return [await connectInAppWallet(personalAccount, setWallet), personalAccount];
     } catch (error) {
         console.error(error);
+        return [undefined, undefined];
     }
 }
 
-export const connectSmartWallet = async (account: Account, email: string,
+export const connectSmartWallet = async (
+    account: Account,
+    email: string,
     statusCallback: (status: string) => void
 ) => {
-    console.log("Account for wallet connected", account)
-    console.log(account.address)
+    console.log("Account for wallet connected", account);
+    console.log(account.address);
 
     const contract = getContract({
         client,
@@ -67,11 +79,11 @@ export const connectSmartWallet = async (account: Account, email: string,
         statusCallback("Creating new account...");
 
         statusCallback("Sending starter registry initial funds...");
-        const batchTx = await sendTransaction({ account, transaction });
+        const transactionResult = await sendTransaction({ account, transaction });
 
         console.log(UsersContract);
         console.log(transaction);
-        console.log(batchTx);
+        console.log(transactionResult);
 
     } else {
         statusCallback("Account registered! Loading Process...");

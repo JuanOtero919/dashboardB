@@ -1,41 +1,40 @@
 'use client';
 
-import { PreparedTransaction, prepareContractCall } from "thirdweb";
 import { useActiveAccount, useReadContract, useSendTransaction } from "thirdweb/react";
+import { PreparedTransaction, prepareContractCall } from "thirdweb";
 import { useEffect, useState } from "react";
-import { Account } from "thirdweb/wallets";
 import { participantsFields, initialParticipants, myProcessesFields } from "@/utils/requiredFields";
 import { getDocumentContract, mainContract } from "@/utils/contracts";
 import { parseJsonString } from "@/utils/json";
 import { getProcessPhasesByAddress, getWalletAddress } from "../../contractInteract";
-import DocumentTx from "../../documentTransaction";
-import { EditForm } from "@/components/editableForm";
-import { DataCard } from "@/components/dataVisualization";
 import { useGetDocDataMyProcesses } from "../../getDocumentData";
-import { EventsHistory } from "@/app/eventsHistory";
+import { ArrowDownFromLine, FilePlus } from "lucide-react";
 import { useAuth } from "@/context/context";
+import { EditForm } from "@/components/editableForm";
+import { Button } from '@/utils/types';
+import { RowData } from "@/utils/types";
+import DocumentTx from "../../documentTransaction";
+import FullScreenLoader from "@/components/FullScreenLoader";
+import Table from '@/components/Table';
 
 export default function Home() {
-
     const { isAuthenticated } = useAuth();
 
-    const activeWallet = useActiveAccount() as Account;
-    const wAddress = activeWallet?.address as string;
+    const activeWallet = useActiveAccount();
+    const wAddress = activeWallet ? activeWallet?.address as string : '';
 
     const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null);
-
-    const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
-    const [phases, setPhases] = useState<string[]>([]);
 
     const [processList, setProcessList] = useState<string[]>([""]);
     const [processIds, setProcessIds] = useState<string[]>([""]);
 
     const [selectedDocumentContract, setSelectedDocumentContract] = useState<string>("");
-    const [selectedDocumentContractEvents, setSelectedDocumentContractEvents] = useState<string>("");
 
     const [shouldUpdate, setShouldUpdate] = useState<boolean>(false);
     const { data: myProcesses, loading, error } = useGetDocDataMyProcesses(wAddress, shouldUpdate);
 
+    const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
+    const [phases, setPhases] = useState<string[]>([]);
     const [loadingPhases, setLoadingPhases] = useState<boolean>(true);
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -52,13 +51,12 @@ export default function Home() {
         setShowEditionMode(!showEditionMode);
     };
 
-    //READ
+    //READ BLOCKCHAIN
     const { data: processes } = useReadContract({
         contract: mainContract,
         method: "getAllProcesses",
         params: []
     });
-
 
     const { data: myCurrentProcesses } = useReadContract({
         contract: mainContract,
@@ -80,7 +78,7 @@ export default function Home() {
     }, [processes]);
 
     //SEND TRANSACTIONS
-    const { mutate: sendTransaction, data: transactionResult, isPending, isSuccess } = useSendTransaction();
+    const { mutate: sendTransaction, data: transactionResult, isSuccess } = useSendTransaction();
 
     useEffect(() => {
         setShouldUpdate(!shouldUpdate);
@@ -98,10 +96,10 @@ export default function Home() {
         sendTransaction(tx);
     };
 
-    const setParticipants = async (newJson: Record<string, any>):
+    const setParticipants = async (json: Record<string, any>):
         Promise<[string[], string[], string[]]> => {
 
-        const { students, director, codirector } = newJson;
+        const { students, director, codirector } = json;
 
         const studentsArray = students as string[];
         const studentsArrayToSend: string[] = [];
@@ -163,105 +161,75 @@ export default function Home() {
         changeVisibilityAddProcess();
     };
 
-    const handleShowEvents = async (process: string) => {
-        if (selectedDocumentContractEvents == process) {
-            setSelectedDocumentContractEvents("null");
-        }
-        else {
-            setSelectedDocumentContractEvents(process);
-        }
+    const buttons: Button<RowData>[] = [
+        {
+            icon: <FilePlus />,
+            onClick: handleaddTx,
+            hoverText: 'Añadir documento',
+        },
+        {
+            icon: <ArrowDownFromLine />,
+            onClick: () => { },
+            hoverText: 'Expand',
+        },
+    ];
+
+    const addButton: Button<RowData> =
+    {
+        icon: <FilePlus />,
+        onClick: () => changeVisibilityAddProcess(),
+        hoverText: 'Añadir un Proceso nuevo',
     };
 
-
     return isAuthenticated ? (
-        // <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="w-full">
-            <h2 className="text-xl font-semibold mb-4 text-center">Mis Procesos Activos</h2>
             {!showAddProcess && !showEditionMode &&
                 <>
-                    <div className="flex justify-center mb-4">
-                        <button
-                            onClick={changeVisibilityAddProcess}
-                            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                        >
-                            Añadir un Proceso nuevo
-                        </button>
-                    </div>
                     {loading && <p>Cargando procesos...</p>}
                     {error && <p>Error al obtener los procesos...</p>}
                     {!loading && !error && myProcesses &&
-                        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4
-                            w-full max-w-screen-lg grid-flow-row auto-rows-max">
-                            {myProcesses.map((process, index) => (
-                                <div key={index} className="p-4 bg-gray-100 rounded-lg mb-4">
-                                    <DataCard
-                                        json={process}
-                                        editableFields={myProcessesFields} />
-                                    <div className="flex justify-center mt-2">
-                                        <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-                                            onClick={() => handleaddTx(process.address)}>
-                                            Añadir documento
-                                        </button>
-                                    </div>
-                                    <EventsHistory contractTo={process.address} />
-
-                                    {/* {process.address != selectedDocumentContractEvents &&
-                                        <button onClick={() => handleShowEvents(process.address)}>
-                                            Mostrar historial</button>}
-                                    {process.address == selectedDocumentContractEvents &&
-                                        <div>
-                                            <button onClick={() => handleShowEvents(process.address)}>
-                                                Ocultar historial</button>
-                                            <EventsHistory contractTo={process.address} />
-                                        </div>
-                                    } */}
-                                </ div>
-                            ))
-                            }
-                        </ div>
+                        <div className="p-4">
+                            <Table
+                                title="Mis procesos Activos"
+                                columns={myProcessesFields}
+                                data={myProcesses}
+                                buttons={buttons}
+                                addButton={addButton} />
+                        </div>
                     }
                 </>
             }
+            {showAddProcess && (
+                <div className="p-4 bg-gray-100 rounded-lg mb-4">
+                    <h2 className="text-xl font-semibold mb-4 text-center">
+                        Añadir nuevo proceso de Grado
+                    </h2>
+                    <div className="bg-white p-6 rounded-b-lg mb-4 space-y-2">
+                        <label>Programa</label>
+                        <select
+                            value={selectedProcessId || ''}
+                            onChange={handleOptionChange}
+                            className="border border-gray-300 rounded-md p-2 w-full"
+                        >
+                            <option value="">Selecciona una opción</option>
+                            {processIds.map((processId, index) => (
+                                <option key={index} value={processId}>
+                                    {`${processId} - ${parseJsonString(processList[index]).name}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <EditForm
+                        json={initialParticipants}
+                        editableFields={participantsFields}
+                        onSaveChanges={createDocumentProcess}
+                        onExit={changeVisibilityAddProcess}
+                    />
+                </div>
+            )}
 
-            <div className="p-4 bg-gray-100 rounded-lg mb-4">
-                {showAddProcess && (
-                    <>
-                        <h2 className="text-xl font-semibold mb-4 text-center">Añadir nuevo proceso de Grado</h2>
-                        <div className="mb-4">
-                            <select
-                                value={selectedProcessId || ''}
-                                onChange={handleOptionChange}
-                                className="border border-gray-300 rounded-md p-2 w-full"
-                            >
-                                <option value="">Selecciona una opción</option>
-                                {processIds.map((processId, index) => (
-                                    <option key={index} value={processId}>
-                                        {`${processId} - ${parseJsonString(processList[index]).name}`}
-                                    </option>
-                                ))}
-                            </select>
-                            {selectedProcessId && (
-                                <p className="mt-2">Has seleccionado: {selectedProcessId}</p>
-                            )}
-                        </div>
-                        <EditForm
-                            json={initialParticipants}
-                            editableFields={participantsFields}
-                            onSaveChanges={createDocumentProcess}
-                        />
-                        <div className="flex justify-center mt-4 space-x-2">
-                            <button
-                                onClick={changeVisibilityAddProcess}
-                                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-                            >
-                                Cerrar
-                            </button>
-                        </div>
-                    </>
-                )}
-            </div>
-            <div className="p-4 bg-gray-100 rounded-lg mb-4">
-                {showEditionMode && !loadingPhases &&
+            {showEditionMode && !loadingPhases &&
+                <div className="p-4 bg-gray-100 rounded-lg mb-4">
                     <DocumentTx contractTo={selectedDocumentContract}
                         changeVisibilityEdit={changeVisibilityEdit}
                         user="student"
@@ -270,11 +238,10 @@ export default function Home() {
                         phases={phases}
                         setIsSuccess={setShouldUpdate}
                     />
-                }
-            </div>
+                </div>
+            }
         </div>
-        // </div>
     ) : (
-        <p>No esta logueado</p>
+        <FullScreenLoader />
     );
 }

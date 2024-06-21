@@ -1,7 +1,6 @@
 import { readContract } from "thirdweb";
 import { getDocumentContract, mainContract, usersContract } from "../utils/contracts";
 import { cyph } from "../utils/cypher";
-import { Account } from "thirdweb/wallets";
 import { parseJsonString } from "../utils/json";
 
 export const getWalletAddress = async (email: string): Promise<string> => {

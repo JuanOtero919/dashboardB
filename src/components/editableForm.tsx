@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { EditableField } from "../utils/requiredFields"
-import { Ipfs } from './ipfs';
+import { FormProps } from '@/utils/types';
+import { Ipfs } from './Ipfs';
 
-interface Props {
-    json: Record<string, any>;
-    editableFields: EditableField[];
-    onSaveChanges: (updatedJson: Record<string, any>) => void;
-}
-
-export const EditForm: React.FC<Props> = ({ json, editableFields, onSaveChanges }) => {
+export const EditForm: React.FC<FormProps> = ({ json, editableFields, onSaveChanges, onExit }) => {
     const [editableData, setEditableData] = useState<Record<string, any>>(json);
 
     // Este efecto se ejecuta cuando el componente se monta o cuando el parametro cambia
@@ -43,11 +37,11 @@ export const EditForm: React.FC<Props> = ({ json, editableFields, onSaveChanges 
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white p-6 rounded-b-lg shadow-md">
             <form onSubmit={handleSubmit} className="space-y-4">
                 {editableFields.map((field, index) => (
                     <div key={index} className="flex flex-col space-y-2" >
-                        {field.size == "single" &&
+                        {field.size == "single" && field.key != "phase" &&
                             <label className="block text-gray-700 font-medium">
                                 {field.name}:
                                 <input type={field.type}
@@ -56,35 +50,45 @@ export const EditForm: React.FC<Props> = ({ json, editableFields, onSaveChanges 
                                     onChange={handleInputChange}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
+                            </label>}
+
+                        {field.size == "reduced-link" &&
+                            <label className="block text-gray-700 font-medium">
                                 {field.type == "url" &&
                                     <Ipfs data={editableData} sendLinkToData={setEditableData} />
                                 }
+                                {field.name}:
+                                <input type={field.type}
+                                    name={field.key}
+                                    value={editableData[field.key]}
+                                    onChange={handleInputChange}
+                                    readOnly
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
                             </label>}
+
                         <div>
                             {field.size == "multiple" &&
                                 <div className="space-y-2">
-                                    <label className="block text-gray-700 font-medium">
-                                        {editableData[field.key]}
+                                    <label className="block text-gray-700 font-medium text-base">
+                                        {field.name}
                                     </label>
                                     {(editableData[field.key] as string[]).map((multi_field, idx) => (
                                         <div key={idx} className="flex items-center space-x-2">
-                                            <label className="block text-gray-700 font-medium">
-                                                {field.subname} {idx + 1}:
+                                            <label className="flex items-center justify-center text-gray-700 font-medium w-full">
+                                                <span className='whitespace-nowrap pr-4'>{`${field.subname} ${idx + 1}:`}</span>
                                                 <input
                                                     type={field.type}
                                                     value={multi_field}
-                                                    onChange={(e) =>
-                                                        handleMultiInputChange(field.key,
-                                                            idx, e.target.value)}
-                                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                                    onChange={(e) => handleMultiInputChange(field.key, idx, e.target.value)}
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2 mr-4"
 
                                                 />
                                                 <button type="button" onClick={() =>
                                                     handleRemoveField(field.key, idx)}
-                                                    className="bg-red-500 text-white px-3 py-1 rounded">
+                                                    className="bg-red-500 text-white px-3 py-1 rounded mx-1" >
                                                     -
                                                 </button>
-
                                                 <button type="button" onClick={() =>
                                                     handleAddField(field.key, idx)}
                                                     className="bg-blue-500 text-white px-3 py-1 rounded">
@@ -93,14 +97,20 @@ export const EditForm: React.FC<Props> = ({ json, editableFields, onSaveChanges 
                                             </label>
                                         </div>
                                     ))}
-
                                 </div>
                             }
                         </div>
                     </div>
                 ))}
                 < div className="text-center">
-                    <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Save Changes</button>
+                    <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 mr-4">
+                        Guardar Cambios
+                    </button>
+                    <button type='button'
+                        onClick={() => onExit()}
+                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                    > Cerrar
+                    </button>
                 </div>
             </form >
         </div >

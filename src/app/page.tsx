@@ -1,22 +1,12 @@
 'use client';
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useAuth } from "../context/context";
-import { useRouter } from "next/navigation";
-import Login from "../pageComponents/login";
+import Login from "../pageComponents/Login";
+import FullScreenLoader from "@/components/FullScreenLoader";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
 
-  const router = useRouter();
-  useEffect(() => {
-    if (isAuthenticated) router.push("/process");
-  }, [isAuthenticated]
-  );
-
-  return isAuthenticated ? (
-    <p>Redirigiendo...</p>
-  ) : (
-    <Login />
-  )
+  return isAuthenticated ? (<FullScreenLoader />) : (<Login />)
 }

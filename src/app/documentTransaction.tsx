@@ -1,46 +1,39 @@
-'use client'
+'use client';
 
-import { PreparedTransaction, prepareContractCall, sendTransaction as send } from "thirdweb";
+import { PreparedTransaction, prepareContractCall } from "thirdweb";
 import { useActiveAccount, useSendTransaction, useSendBatchTransaction } from "thirdweb/react";
-import { approbalTxFields, initialapprobalTx, } from "../utils/requiredFields";
-import { EditForm } from "../components/editableForm";
-import styles from "../app/styles.module.css";
-import { getDocumentContract, getMultisignContract, mainContract } from "../utils/contracts";
-import { Account } from "thirdweb/wallets";
-import { getCurrentDate } from "../utils/dateManagement";
 import { useEffect, useState } from "react";
+import { approbalTxFields, initialapprobalTx, } from "@/utils/requiredFields";
+import { EditForm } from "@/components/editableForm";
+import { getDocumentContract, getMultisignContract, mainContract } from "@/utils/contracts";
+import { getCurrentDate } from "../utils/dateManagement";
 import { getPendingEvaluations } from "./contractInteract";
+import { DocumentTxProps } from "@/utils/types";
 
 export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
-    selectedPhase, phases, setPhases, setIsSuccess }:
-    {
-        user: string, contractTo: string, changeVisibilityEdit: Function,
-        selectedPhase: string | null, phases: string[], setPhases: Function, setIsSuccess: Function
-    }) {
+    phases, setPhases, setIsSuccess }: DocumentTxProps) {
+
+    const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setPhases(event.target.value);
+        setSelectedPhase(event.target.value);
+        console.log(selectedPhase);
     };
 
-    const wallet = useActiveAccount() as Account;
-    const account = wallet.address;
+    const activeWallet = useActiveAccount();// as Account;
+    const wAddress = activeWallet ? activeWallet?.address as string : '';
 
     const documentContract = getDocumentContract(contractTo);
-
-    //READ
-    const cuenta = useActiveAccount() as Account;
 
     //SEND TRANSACTIONS
     const { mutate: sendTransaction, data: transactionResult, isSuccess } = useSendTransaction();
     const { mutate: sendBatchTransaction, } = useSendBatchTransaction();
 
-    useEffect(() => {
-        setIsSuccess(isSuccess);
-    }, [isSuccess]);
+    useEffect(() => { setIsSuccess(isSuccess); }, [isSuccess]);
 
     const signConfirmation = async (tx1: PreparedTransaction) => {
-        console.log("Usted ha entrado a la seccion de aprobacion multifirma");
-        const multiSignAddress = await getPendingEvaluations(account, contractTo);
+        console.log("Sección de aprobación multifirma");
+        const multiSignAddress = await getPendingEvaluations(wAddress, contractTo);
         console.log("LA MULTISIGN ADDRRES ES:", multiSignAddress);
 
         if (multiSignAddress.length > 10) {
@@ -53,14 +46,11 @@ export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
             });
 
             const txSign = transactionSign as PreparedTransaction;
-
             console.log("msigncontract.....", multiSignContract);
-
             console.log("txsign.....", txSign);
 
             sendBatchTransaction([tx1, txSign]);
         };
-
     }
 
     const requestAssignation = async (tx1: PreparedTransaction) => {
@@ -77,7 +67,9 @@ export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
     }
 
     const addTransaction = async (newJson: Record<string, any>) => {
-        const { phase, state, associatedLink } = newJson;
+        const { state, associatedLink } = newJson;
+        console.log(selectedPhase);
+        const phase = selectedPhase as string;
         const date = getCurrentDate();
         const transaction = prepareContractCall({
             contract: documentContract,
@@ -86,44 +78,51 @@ export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
         });
 
         const tx = transaction as PreparedTransaction;
-        //const result = await send({ account: cuenta, transaction: tx });
-
         console.log("Transacción efectuada", tx);
-        //console.log("Resultado de la transacción", result);
 
         if (user == "student") {
             console.log("entro a user student");
             if (state == "Aprobado") {
                 requestAssignation(tx);
             };
-        };
-
-        if (user == "evaluator" && state == "Aprobado") {
-            console.log("entro a user evaluator + aprobado");
-            signConfirmation(tx);
-        };
+        } else {
+            if (user == "evaluator" && state == "Aprobado") {
+                console.log("entro a user evaluator + aprobado");
+                signConfirmation(tx);
+            } else {
+                sendTransaction(tx);
+            }
+        }
         changeVisibilityEdit();
     };
 
     return (
-        <>
-            <h2>Añadir doc al proceso de Grado</h2>
-            <label> Fase:
-                <select value={selectedPhase || ''} onChange={handleOptionChange}>
-                    <option value="">Selecciona una opción</option>
-                    {phases.map((phase, index) => (
-                        <option key={index} value={phase}>{phase}</option>
-                    ))}
-                </select>
-            </label>
+
+        <div className="p-4 bg-gray-100 rounded-lg mb-4">
+            {user == "student" && <h2 className="text-xl font-semibold mb-4 text-center">
+                Añadir documento al proceso de Grado
+            </h2>}
+            {user == "evaluator" && <h2 className="text-xl font-semibold mb-4 text-center">
+                Evaluar proceso de Grado
+            </h2>}
+            <div className="bg-white px-6 pt-6 rounded-t-lg shadow-md flex flex-col space-y-2" >
+                <label className="block text-gray-700 font-medium">
+                    Fase:
+                    <select value={selectedPhase || ''} onChange={handleOptionChange}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    >
+                        <option value="">Selecciona una opción</option>
+                        {phases.map((phase, index) => (
+                            <option key={index} value={phase}>{phase}</option>
+                        ))}
+                    </select>
+                </label>
+            </div>
 
             <EditForm json={initialapprobalTx}
                 editableFields={approbalTxFields}
-                onSaveChanges={addTransaction} />
-            <button
-                onClick={() => changeVisibilityEdit()}>
-                Cerrar
-            </button>
-        </>
+                onSaveChanges={addTransaction}
+                onExit={() => changeVisibilityEdit()} />
+        </div>
     );
 }

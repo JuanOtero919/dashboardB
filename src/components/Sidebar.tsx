@@ -1,13 +1,7 @@
 "use client";
 
 import {
-  BellIcon,
-  Cookie,
-  CreditCard,
   Inbox,
-  MessageSquare,
-  Settings,
-  User,
   BookOpenCheck,
   FileText,
   Cpu
@@ -15,6 +9,7 @@ import {
 import UserItem from "./UserItem";
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command";
 import Link from "next/link";
+import Logout from "./Logout";
 
 export default function Sidebar() {
   const menuList = [
@@ -81,10 +76,7 @@ export default function Sidebar() {
           </CommandList>
         </Command>
       </div>
-      {/* <Link href='/team' className="flex items-center gap-2">
-        <Settings />
-        <span> Team Setting</span>
-      </Link> */}
-    </div>
+      <Logout />
+    </div >
   );
 }

@@ -5,16 +5,17 @@ import { approbalTxFields } from "../utils/requiredFields";
 import { useEffect, useState } from "react";
 import { getDocumentContract } from "../utils/contracts";
 import { Wallet } from "thirdweb/wallets";
-import { DataCard } from "../components/dataVisualization";
+import Table from "@/components/Table";
+import { Button } from "@/components/ui/button";
 
 export function EventsHistory({ contractTo }:
     { contractTo: string }) {
 
     const activeWallet = useActiveWallet() as Wallet;
-    const wAddress = activeWallet.getAccount()?.address;
+    // const wAddress = activeWallet.getAccount()?.address;
 
     const [buttonName, setbuttonName] = useState<string>("Mostrar documentos");
-    const [showEvents, setShowEvents] = useState(false);
+    const [showEvents, setShowEvents] = useState(true);
 
     const changeVisibilityEvents = () => {
         const newButtonName = buttonName === "Mostrar documentos" ?
@@ -64,24 +65,16 @@ export function EventsHistory({ contractTo }:
 
     return (
         <div>
-            <div className="flex justify-center mt-2">
+            {/* <div className="flex justify-center mt-2">
                 <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
                     onClick={mostrarCosasContrato}>{buttonName}</button>
-            </div>
+            </div> */}
             {showEvents && loading &&
                 <div className="p-8 bg-white rounded-lg shadow-lg w-full max-w-2xl">
                     <p>Loading....</p>
                 </div>}
             {showEvents && !loading &&
-                <div className="p-8 bg-white rounded-lg shadow-lg w-full max-w-2xl">
-                    {datos.map((event, index) => (
-                        <div key={index} className="p-4 bg-gray-100 rounded-lg mb-4">
-                            <DataCard
-                                json={event}
-                                editableFields={approbalTxFields} />
-                        </ div>
-                    ))}
-                </ div>
+                <Table title='' columns={approbalTxFields} data={datos} buttons={[]} />
             }
         </div>
     )
