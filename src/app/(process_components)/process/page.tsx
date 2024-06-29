@@ -152,7 +152,7 @@ export default function Home() {
             contract: mainContract,
             method: "createDocumentProcess",
             params: ["Initialized", selectedProcessId as string,
-                mainContract.address, studentsArray, directorArray, codirectorArray],
+                studentsArray, directorArray, codirectorArray],
         });
         sendTransaction(transaction as PreparedTransaction);
         console.log(transactionResult);

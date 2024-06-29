@@ -21,10 +21,10 @@ export const getProcessbyId = async (id: string): Promise<string> => {
     return process;
 };
 
-export const getAllPendingProcesses = async (): Promise<string[]> => {
+export const getAllProcessesToAssign = async (): Promise<string[]> => {
     const allPendingProcesses = await readContract({
         contract: mainContract,
-        method: "getAllPendingProcesses",
+        method: "getAllProcessesToAssign",
         params: [],
     });
     return allPendingProcesses as string[];
@@ -61,7 +61,7 @@ export const getContractState = async (contractTo: string): Promise<string> => {
     const processContract = getDocumentContract(contractTo);
     const contractState = await readContract({
         contract: processContract,
-        method: "contractState",
+        method: "getContractState",
         params: [],
     });
     return contractState;
@@ -71,7 +71,7 @@ export const getContractProcessId = async (contractTo: string): Promise<string> 
     const processContract = getDocumentContract(contractTo);
     const contractProcessId = await readContract({
         contract: processContract,
-        method: "contractProcessId",
+        method: "getContractProcessId",
         params: [],
     });
     return contractProcessId;

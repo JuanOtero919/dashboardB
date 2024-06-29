@@ -9,7 +9,7 @@ import Popup from "./Popup";
 
 export default function Logout() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const { isAuthenticated, logout, setInAppAccount } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
     const activeWallet = useActiveWallet();
     const { disconnect } = useDisconnect();
 
@@ -17,9 +17,8 @@ export default function Logout() {
         console.log(activeWallet);
         if (activeWallet) disconnect(activeWallet);
 
-        console.log("Entro a la funcion con auth:", isAuthenticated);
+        console.log("Entro a la funcion disconnect con auth:", isAuthenticated);
         logout();
-        setInAppAccount(undefined);
         setIsPopupOpen(false); // Cerrar el popup después de confirmar
     }
 

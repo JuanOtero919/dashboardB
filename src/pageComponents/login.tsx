@@ -8,7 +8,7 @@ import { client } from "@/utils/constants";
 import { useAuth } from "@/context/context";
 
 export default function Login() {
-    const { login, setInAppAccount } = useAuth();
+    const { login } = useAuth();
     const [loadingStatus, setLoadingStatus] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isInvalid, setIsInvalid] = useState<boolean>(false);
@@ -26,7 +26,6 @@ export default function Login() {
             if (user_account && personalWallet && email?.endsWith("@unicauca.edu.co")) {
                 console.log("Correo valido:", email);
                 await connectSmartWallet(user_account, email, (status) => setLoadingStatus(status));
-                setInAppAccount(personalWallet);
                 setIsInvalid(false);
                 login();
             } else {

@@ -58,7 +58,7 @@ export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
 
         const transaction = prepareContractCall({
             contract: mainContract,
-            method: "addProcessToAsign",
+            method: "addProcessToAssign",
             params: [contractTo],
         });
 
@@ -67,14 +67,14 @@ export default function DocumentTx({ user, contractTo, changeVisibilityEdit,
     }
 
     const addTransaction = async (newJson: Record<string, any>) => {
-        const { state, associatedLink } = newJson;
+        const { state, associatedLink, comments } = newJson;
         console.log(selectedPhase);
         const phase = selectedPhase as string;
         const date = getCurrentDate();
         const transaction = prepareContractCall({
             contract: documentContract,
             method: "addTransaction",
-            params: [phase, state, associatedLink, date],
+            params: [phase, state, associatedLink, comments, date],
         });
 
         const tx = transaction as PreparedTransaction;

@@ -10,459 +10,481 @@ export const mainContract = getContract({
   address: PROCESS_MANAGEMENT_ADDRESS,
   abi: [
     {
-      "type": "constructor",
-      "name": "",
       "inputs": [],
-      "outputs": [],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "constructor"
     },
     {
-      "type": "event",
-      "name": "AsignationCreated",
+      "anonymous": false,
       "inputs": [
         {
-          "type": "address",
-          "name": "asigned",
           "indexed": true,
-          "internalType": "address"
+          "internalType": "address",
+          "name": "assigned",
+          "type": "address"
         },
         {
-          "type": "address",
+          "indexed": false,
+          "internalType": "address",
           "name": "multisignContract",
-          "indexed": false,
-          "internalType": "address"
+          "type": "address"
         }
       ],
-      "outputs": [],
-      "anonymous": false
+      "name": "AssignmentCreated",
+      "type": "event"
     },
     {
-      "type": "event",
-      "name": "CurrentProcessAdded",
+      "anonymous": false,
       "inputs": [
         {
-          "type": "address",
+          "indexed": true,
+          "internalType": "address",
           "name": "owner",
-          "indexed": true,
-          "internalType": "address"
+          "type": "address"
         },
         {
-          "type": "address",
-          "name": "process",
           "indexed": true,
-          "internalType": "address"
+          "internalType": "address",
+          "name": "process",
+          "type": "address"
         }
       ],
-      "outputs": [],
-      "anonymous": false
+      "name": "CurrentProcessAdded",
+      "type": "event"
     },
     {
-      "type": "event",
-      "name": "DocumentProcessCreated",
+      "anonymous": false,
       "inputs": [
         {
-          "type": "address",
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "process",
+          "type": "address"
+        }
+      ],
+      "name": "CurrentProcessDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
           "name": "creator",
-          "indexed": true,
-          "internalType": "address"
+          "type": "address"
         },
         {
-          "type": "address",
+          "indexed": true,
+          "internalType": "address",
           "name": "documentProcess",
-          "indexed": false,
-          "internalType": "address"
+          "type": "address"
         }
       ],
-      "outputs": [],
-      "anonymous": false
+      "name": "DocumentProcessCreated",
+      "type": "event"
     },
     {
-      "type": "event",
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "string",
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "process",
+          "type": "string"
+        }
+      ],
       "name": "ProcessAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
       "inputs": [
         {
-          "type": "string",
+          "indexed": true,
+          "internalType": "address",
+          "name": "processAddress",
+          "type": "address"
+        }
+      ],
+      "name": "ProcessAssigned",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "string",
           "name": "id",
-          "indexed": true,
-          "internalType": "string"
-        },
-        {
-          "type": "string",
-          "name": "process",
-          "indexed": false,
-          "internalType": "string"
+          "type": "string"
         }
       ],
-      "outputs": [],
-      "anonymous": false
-    },
-    {
-      "type": "event",
-      "name": "ProcessAsigned",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "_direccion",
-          "indexed": true,
-          "internalType": "address"
-        }
-      ],
-      "outputs": [],
-      "anonymous": false
-    },
-    {
-      "type": "event",
       "name": "ProcessDeleted",
-      "inputs": [
-        {
-          "type": "string",
-          "name": "id",
-          "indexed": true,
-          "internalType": "string"
-        }
-      ],
-      "outputs": [],
-      "anonymous": false
+      "type": "event"
     },
     {
-      "type": "event",
-      "name": "ProcessUpdated",
+      "anonymous": false,
       "inputs": [
         {
-          "type": "string",
-          "name": "id",
           "indexed": true,
-          "internalType": "string"
+          "internalType": "string",
+          "name": "id",
+          "type": "string"
         },
         {
-          "type": "string",
-          "name": "process",
           "indexed": false,
-          "internalType": "string"
+          "internalType": "string",
+          "name": "process",
+          "type": "string"
         }
       ],
-      "outputs": [],
-      "anonymous": false
+      "name": "ProcessUpdated",
+      "type": "event"
     },
     {
-      "type": "event",
-      "name": "processToAsign",
+      "anonymous": false,
       "inputs": [
         {
-          "type": "address",
-          "name": "_direccion",
           "indexed": true,
-          "internalType": "address"
+          "internalType": "address",
+          "name": "processAddress",
+          "type": "address"
         }
       ],
-      "outputs": [],
-      "anonymous": false
+      "name": "processToAssign",
+      "type": "event"
     },
     {
-      "type": "function",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_processAddress",
+          "type": "address"
+        }
+      ],
       "name": "addCurrentProcess",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "_owner",
-          "internalType": "address"
-        },
-        {
-          "type": "address",
-          "name": "_contract",
-          "internalType": "address"
-        }
-      ],
       "outputs": [],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "type": "function",
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "process",
+          "type": "string"
+        }
+      ],
       "name": "addProcess",
-      "inputs": [
-        {
-          "type": "string",
-          "name": "id",
-          "internalType": "string"
-        },
-        {
-          "type": "string",
-          "name": "process",
-          "internalType": "string"
-        }
-      ],
       "outputs": [],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "type": "function",
-      "name": "addProcessToAsign",
       "inputs": [
         {
-          "type": "address",
-          "name": "_direccion",
-          "internalType": "address"
+          "internalType": "address",
+          "name": "_processAddress",
+          "type": "address"
         }
       ],
+      "name": "addProcessToAssign",
       "outputs": [],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "type": "function",
-      "name": "createAsignationRequest",
       "inputs": [
         {
-          "type": "address",
+          "internalType": "address",
           "name": "_contract",
-          "internalType": "address"
+          "type": "address"
         },
         {
-          "type": "address",
+          "internalType": "address",
           "name": "_mainContract",
-          "internalType": "address"
+          "type": "address"
         },
         {
-          "type": "address[]",
+          "internalType": "address[]",
           "name": "_owners",
-          "internalType": "address[]"
+          "type": "address[]"
         },
         {
-          "type": "uint256",
+          "internalType": "uint256",
           "name": "_numConfirmationsRequired",
-          "internalType": "uint256"
+          "type": "uint256"
         },
         {
-          "type": "string",
+          "internalType": "string",
           "name": "_state",
-          "internalType": "string"
+          "type": "string"
         }
       ],
+      "name": "createAssignmentRequest",
       "outputs": [
         {
-          "type": "address",
+          "internalType": "address",
           "name": "",
-          "internalType": "address"
+          "type": "address"
         }
       ],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "type": "function",
-      "name": "createDocumentProcess",
       "inputs": [
         {
-          "type": "string",
+          "internalType": "string",
           "name": "_initialState",
-          "internalType": "string"
+          "type": "string"
         },
         {
-          "type": "string",
+          "internalType": "string",
           "name": "_contractProcessId",
-          "internalType": "string"
+          "type": "string"
         },
         {
-          "type": "address",
-          "name": "_mainContract",
-          "internalType": "address"
-        },
-        {
-          "type": "address[]",
+          "internalType": "address[]",
           "name": "_students",
-          "internalType": "address[]"
+          "type": "address[]"
         },
         {
-          "type": "address[]",
+          "internalType": "address[]",
           "name": "_director",
-          "internalType": "address[]"
+          "type": "address[]"
         },
         {
-          "type": "address[]",
+          "internalType": "address[]",
           "name": "_codirector",
-          "internalType": "address[]"
+          "type": "address[]"
         }
       ],
+      "name": "createDocumentProcess",
       "outputs": [
         {
-          "type": "address",
+          "internalType": "address",
           "name": "",
-          "internalType": "address"
+          "type": "address"
         }
       ],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
-      "type": "function",
-      "name": "deleteProcess",
       "inputs": [
         {
-          "type": "string",
-          "name": "id",
-          "internalType": "string"
-        }
-      ],
-      "outputs": [],
-      "stateMutability": "nonpayable"
-    },
-    {
-      "type": "function",
-      "name": "deleteProcessToAsign",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "_direccion",
-          "internalType": "address"
-        }
-      ],
-      "outputs": [],
-      "stateMutability": "nonpayable"
-    },
-    {
-      "type": "function",
-      "name": "getAllPendingEvaluations",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "user",
-          "internalType": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "type": "address[]",
-          "name": "",
-          "internalType": "address[]"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getAllPendingProcesses",
-      "inputs": [],
-      "outputs": [
-        {
-          "type": "address[]",
-          "name": "",
-          "internalType": "address[]"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getAllProcesses",
-      "inputs": [],
-      "outputs": [
-        {
-          "type": "string[]",
-          "name": "",
-          "internalType": "string[]"
-        },
-        {
-          "type": "string[]",
-          "name": "",
-          "internalType": "string[]"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getCurrentProcesses",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "user",
-          "internalType": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "type": "address[]",
-          "name": "",
-          "internalType": "address[]"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getPendingEvaluations",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "user",
-          "internalType": "address"
-        },
-        {
-          "type": "address",
-          "name": "process",
-          "internalType": "address"
-        }
-      ],
-      "outputs": [
-        {
-          "type": "address",
-          "name": "",
-          "internalType": "address"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getProcess",
-      "inputs": [
-        {
-          "type": "string",
-          "name": "id",
-          "internalType": "string"
-        }
-      ],
-      "outputs": [
-        {
-          "type": "string",
-          "name": "",
-          "internalType": "string"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "removeEvaluatorFromPending",
-      "inputs": [
-        {
-          "type": "address",
-          "name": "_contract",
-          "internalType": "address"
-        },
-        {
-          "type": "address",
+          "internalType": "address",
           "name": "_owner",
-          "internalType": "address"
-        }
-      ],
-      "outputs": [],
-      "stateMutability": "nonpayable"
-    },
-    {
-      "type": "function",
-      "name": "updateProcess",
-      "inputs": [
-        {
-          "type": "string",
-          "name": "id",
-          "internalType": "string"
+          "type": "address"
         },
         {
-          "type": "string",
-          "name": "process",
-          "internalType": "string"
+          "internalType": "address",
+          "name": "_processAddress",
+          "type": "address"
         }
       ],
+      "name": "deleteCurrentProcess",
       "outputs": [],
-      "stateMutability": "nonpayable"
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "id",
+          "type": "string"
+        }
+      ],
+      "name": "deleteProcess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_processAddress",
+          "type": "address"
+        }
+      ],
+      "name": "deleteProcessToAssign",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getAllPendingEvaluations",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllProcesses",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllProcessesToAssign",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getCurrentProcesses",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "process",
+          "type": "address"
+        }
+      ],
+      "name": "getPendingEvaluations",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "id",
+          "type": "string"
+        }
+      ],
+      "name": "getProcess",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "removeEvaluatorFromPending",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "process",
+          "type": "string"
+        }
+      ],
+      "name": "updateProcess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ]
 });
@@ -661,6 +683,12 @@ export const getDocumentContract = (address: string) => {
           {
             "indexed": false,
             "internalType": "string",
+            "name": "comments",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
             "name": "date",
             "type": "string"
           }
@@ -710,6 +738,11 @@ export const getDocumentContract = (address: string) => {
           },
           {
             "internalType": "string",
+            "name": "_comments",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
             "name": "_date",
             "type": "string"
           }
@@ -721,7 +754,7 @@ export const getDocumentContract = (address: string) => {
       },
       {
         "inputs": [],
-        "name": "contractProcessId",
+        "name": "getContractProcessId",
         "outputs": [
           {
             "internalType": "string",
@@ -734,7 +767,26 @@ export const getDocumentContract = (address: string) => {
       },
       {
         "inputs": [],
-        "name": "contractState",
+        "name": "getContractState",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_participant",
+            "type": "address"
+          }
+        ],
+        "name": "getParticipant",
         "outputs": [
           {
             "internalType": "string",
@@ -779,6 +831,11 @@ export const getDocumentContract = (address: string) => {
             "internalType": "string",
             "name": "",
             "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
           }
         ],
         "stateMutability": "view",
@@ -792,25 +849,6 @@ export const getDocumentContract = (address: string) => {
             "internalType": "uint256",
             "name": "",
             "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "name": "participants",
-        "outputs": [
-          {
-            "internalType": "string",
-            "name": "",
-            "type": "string"
           }
         ],
         "stateMutability": "view",
@@ -861,6 +899,11 @@ export const getDocumentContract = (address: string) => {
           },
           {
             "internalType": "string",
+            "name": "comments",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
             "name": "date",
             "type": "string"
           }
@@ -879,186 +922,183 @@ export const getMultisignContract = (address: string) => {
     address,
     abi: [
       {
-        "type": "constructor",
-        "name": "",
         "inputs": [
           {
-            "type": "address",
+            "internalType": "address",
             "name": "_mainContract",
-            "internalType": "address"
+            "type": "address"
           },
           {
-            "type": "address",
+            "internalType": "address",
             "name": "_contract",
-            "internalType": "address"
+            "type": "address"
           },
           {
-            "type": "address[]",
+            "internalType": "address[]",
             "name": "_owners",
-            "internalType": "address[]"
+            "type": "address[]"
           },
           {
-            "type": "uint256",
+            "internalType": "uint256",
             "name": "_numConfirmationsRequired",
-            "internalType": "uint256"
+            "type": "uint256"
           },
           {
-            "type": "string",
+            "internalType": "string",
             "name": "_state",
-            "internalType": "string"
+            "type": "string"
           }
         ],
-        "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "constructor"
       },
       {
-        "type": "event",
-        "name": "Confirmation",
+        "anonymous": false,
         "inputs": [
           {
-            "type": "address",
-            "name": "sender",
             "indexed": true,
-            "internalType": "address"
+            "internalType": "address",
+            "name": "sender",
+            "type": "address"
           },
           {
-            "type": "string",
-            "name": "state",
             "indexed": false,
-            "internalType": "string"
+            "internalType": "string",
+            "name": "state",
+            "type": "string"
           }
         ],
-        "outputs": [],
-        "anonymous": false
+        "name": "Confirmation",
+        "type": "event"
       },
       {
-        "type": "function",
-        "name": "callChangeState",
         "inputs": [
           {
-            "type": "string",
+            "internalType": "string",
             "name": "nuevoEstado",
-            "internalType": "string"
+            "type": "string"
           }
         ],
+        "name": "callChangeState",
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [],
         "name": "confirmTransaction",
-        "inputs": [],
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [],
         "name": "contratoObjetivo",
-        "inputs": [],
         "outputs": [
           {
-            "type": "address",
+            "internalType": "address",
             "name": "",
-            "internalType": "address"
+            "type": "address"
           }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
         "name": "isConfirmed",
-        "inputs": [
-          {
-            "type": "address",
-            "name": "",
-            "internalType": "address"
-          }
-        ],
         "outputs": [
           {
-            "type": "bool",
+            "internalType": "bool",
             "name": "",
-            "internalType": "bool"
+            "type": "bool"
           }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
         "name": "isOwner",
-        "inputs": [
-          {
-            "type": "address",
-            "name": "",
-            "internalType": "address"
-          }
-        ],
         "outputs": [
           {
-            "type": "bool",
+            "internalType": "bool",
             "name": "",
-            "internalType": "bool"
+            "type": "bool"
           }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [],
         "name": "mainContract",
-        "inputs": [],
         "outputs": [
           {
-            "type": "address",
+            "internalType": "address",
             "name": "",
-            "internalType": "address"
+            "type": "address"
           }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [],
         "name": "numConfirmationsRequired",
-        "inputs": [],
         "outputs": [
           {
-            "type": "uint256",
+            "internalType": "uint256",
             "name": "",
-            "internalType": "uint256"
+            "type": "uint256"
           }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        "type": "function",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
         "name": "owners",
-        "inputs": [
-          {
-            "type": "uint256",
-            "name": "",
-            "internalType": "uint256"
-          }
-        ],
         "outputs": [
           {
-            "type": "address",
+            "internalType": "address",
             "name": "",
-            "internalType": "address"
+            "type": "address"
           }
         ],
-        "stateMutability": "view"
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        "type": "function",
-        "name": "setContratoObjetivo",
         "inputs": [
           {
-            "type": "address",
-            "name": "_direccionContrato",
-            "internalType": "address"
+            "internalType": "address",
+            "name": "_contractAddress",
+            "type": "address"
           }
         ],
+        "name": "setContratoObjetivo",
         "outputs": [],
-        "stateMutability": "nonpayable"
+        "stateMutability": "nonpayable",
+        "type": "function"
       }
     ],
   });

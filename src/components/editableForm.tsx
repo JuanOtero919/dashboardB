@@ -13,6 +13,11 @@ export const EditForm: React.FC<FormProps> = ({ json, editableFields, onSaveChan
         setEditableData({ ...editableData, [name]: value });
     };
 
+    const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+        const { name, value } = e.target;
+        setEditableData({ ...editableData, [name]: value });
+    };
+
     const handleMultiInputChange = (name: string, index: number, value: string): void => {
         const newFases = [...editableData[name]];
         newFases[index] = value;
@@ -48,6 +53,18 @@ export const EditForm: React.FC<FormProps> = ({ json, editableFields, onSaveChan
                                     name={field.key}
                                     value={editableData[field.key]}
                                     onChange={handleInputChange}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                                />
+                            </label>}
+
+                        {field.size == "text-area" &&
+                            <label className="block text-gray-700 font-medium">
+                                {field.name}:
+                                <textarea
+                                    name={field.key}
+                                    value={editableData[field.key]}
+                                    onChange={handleTextAreaChange}
+                                    rows={5} cols={50}
                                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                                 />
                             </label>}

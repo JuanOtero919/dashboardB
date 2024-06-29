@@ -134,22 +134,16 @@ export default function Home() {
                         <h2 className="text-xl font-semibold">Añadir nuevo proceso de Grado</h2>
                         <EditForm json={initialProcess}
                             editableFields={processFields}
-                            onSaveChanges={addProcess} />
-                        <Button variant="secondary" className="mt-4"
-                            onClick={changeVisibilityAddProcess}>
-                            Cerrar
-                        </Button>
+                            onSaveChanges={addProcess}
+                            onExit={changeVisibilityAddProcess} />
                     </div>}
                 {showEditionMode &&
                     <div className="text-center">
                         <h2 className="text-xl font-semibold">Editar proceso de Grado</h2>
                         <EditForm json={jsonData}
                             editableFields={processFields}
-                            onSaveChanges={updateProcess} />
-                        <Button variant="secondary" className="mt-4"
-                            onClick={changeVisibilityEdit}>
-                            Cerrar
-                        </Button>
+                            onSaveChanges={updateProcess}
+                            onExit={changeVisibilityEdit} />
                     </div>}
             </Card>
         </div >

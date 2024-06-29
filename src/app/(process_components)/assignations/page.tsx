@@ -22,7 +22,7 @@ export default function Home() {
     //READ BLOCKCHAIN
     const { data: pendingAsignations, } = useReadContract({
         contract: mainContract,
-        method: "getAllPendingProcesses",
+        method: "getAllProcessesToAssign",
         params: []
     });
     //SEND TRANSACTIONS
@@ -53,7 +53,7 @@ export default function Home() {
 
         const transaction = prepareContractCall({
             contract: mainContract,
-            method: "createAsignationRequest",
+            method: "createAssignmentRequest",
             params: [contractTo, mainContract.address, signersArrayToSend, owners.length, state],
         });
 

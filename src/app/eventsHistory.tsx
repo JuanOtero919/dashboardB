@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useActiveWallet, useContractEvents } from "thirdweb/react";
 import { approbalTxFields } from "../utils/requiredFields";

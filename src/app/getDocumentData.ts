@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; //useCallback
-import { getAllPendingEvaluations, getAllPendingProcesses, getContractProcessId, getContractState, getCurrentProcesses } from './contractInteract';
+import { getAllPendingEvaluations, getAllProcessesToAssign, getContractProcessId, getContractState, getCurrentProcesses } from './contractInteract';
 
 interface AsyncData {
     data: Record<string, any>[] | null;
@@ -114,7 +114,7 @@ export function useGetDocDataAsignations(shouldUpdate: boolean): AsyncData {
             console.log("entro al load evaluations");
 
             try {
-                const processesArray = await getAllPendingProcesses();
+                const processesArray = await getAllProcessesToAssign();
                 console.log("procesos obtenidos:", processesArray);
                 if (processesArray) {
                     const myProcessesRecordArray = await Promise.all(

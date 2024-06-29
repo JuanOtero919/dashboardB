@@ -1,7 +1,7 @@
 export interface EditableField {
     name: string;
     subname: string;
-    size: 'single' | 'multiple' | 'reduced-link';
+    size: 'single' | 'multiple' | 'reduced-link' | 'text-area';
     type: 'text' | 'number' | 'email' | 'url';
     key: string;
 }
@@ -15,7 +15,8 @@ export const initialapprobalTx = {
 export const approbalTxFields: EditableField[] = [
     { name: 'Fase', subname: "", size: 'single', type: 'text', key: 'phase' },
     { name: 'Estado', subname: "", size: 'single', type: 'text', key: 'state' },
-    { name: 'Link del documento', subname: "", size: 'reduced-link', type: 'url', key: 'associatedLink' }
+    { name: 'Link del documento', subname: "", size: 'reduced-link', type: 'url', key: 'associatedLink' },
+    { name: 'Comentarios', subname: "", size: 'text-area', type: 'text', key: 'comments' }
 ];
 
 export const initialProcess = {
@@ -31,7 +32,7 @@ export const processFields: EditableField[] = [
 ];
 
 export const initialAsignation = {
-    owners: ["deybyzm@unicauca.edu.co"],
+    owners: [""],
     contractTo: "0x00000000000000",
     state: "undefined"
 };
@@ -46,7 +47,7 @@ export const assignationFieldsHard: EditableField[] = [
 ]
 
 export const initialParticipants = {
-    students: ["deybyzm@unicauca.edu.co"],
+    students: [""],
     director: "",
     codirector: ""
 };

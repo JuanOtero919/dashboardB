@@ -9,7 +9,7 @@ import { client } from "@/utils/constants";
 
 export default function UserItem() {
 
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [user, setUser] = useState("");
@@ -25,7 +25,10 @@ export default function UserItem() {
   };
 
   useEffect(() => { emailInApp(); }, [email]);
-  useEffect(() => { if (!isAuthenticated) router.push("/"); }, [isAuthenticated]);
+  useEffect(() => { if (!isAuthenticated) {router.push("/");
+  console.log("CERRANDO DESDE USER")
+  }
+   }, [isAuthenticated]);
 
   return (
     <div className="border rounded-[8px] p-2">
